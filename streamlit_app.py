@@ -46,12 +46,12 @@ with st.sidebar:
     @st.cache_data
     def convert_df(input_df):
         return input_df.to_csv(index=False).encode('utf-8')
-    example_csv = pd.read_csv('https://raw.githubusercontent.com/dataprofessor/data/master/delaney_solubility_with_descriptors.csv')
+    example_csv = pd.read_csv('https://drive.google.com/uc?export=download&id=1mD2GPIKImNNhwykkUdXpAiO8GrKH-2b6')
     csv = convert_df(example_csv)
     st.download_button(
         label="Download example CSV",
         data=csv,
-        file_name='delaney_solubility_with_descriptors.csv',
+        file_name='hwc-8.csv',
         mime='text/csv',
     )
 
