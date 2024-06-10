@@ -59,7 +59,7 @@ with st.sidebar:
     st.markdown('**1.2. Use example data**')
     example_data = st.toggle('Load example data')
     if example_data:
-        df = pd.read_csv('https://raw.githubusercontent.com/dataprofessor/data/master/delaney_solubility_with_descriptors.csv')
+        df = pd.read_csv('https://drive.google.com/uc?export=download&id=1mD2GPIKImNNhwykkUdXpAiO8GrKH-2b6')
 
     st.header('2. Set Parameters')
     parameter_split_size = st.slider('Data split ratio (% for Training Set)', 10, 90, 80, 5)
