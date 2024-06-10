@@ -35,9 +35,9 @@ with st.expander('About this app'):
 # Sidebar for accepting input parameters
 with st.sidebar:
     # Load data
-    st.header('1.1. Input data')
+    st.header('1. Input data')
 
-    st.markdown('**1. Use custom data**')
+    st.markdown('**1.1 Use custom data**')
     uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, index_col=False)
@@ -57,7 +57,7 @@ with st.sidebar:
 
     # Select example data
     st.markdown('**1.2. Use example data**')
-    example_data = st.toggle('Load example data')
+    example_data = st.toggle('PHL Habitable Worlds Catalog (HWC)')
     if example_data:
         df = pd.read_csv('https://drive.google.com/uc?export=download&id=1mD2GPIKImNNhwykkUdXpAiO8GrKH-2b6')
 
