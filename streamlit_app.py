@@ -9,7 +9,7 @@ import time
 import zipfile
 
 # Page title
-st.set_page_config(page_title='ExoplanetML', page_icon='🤖')
+st.set_page_config(page_title='ExoplanetML', page_icon=':alien:')
 st.title('🤖 ExoplanetML: Machine Learning Model for Target Variable Prediction')
 
 with st.expander('About this app'):
