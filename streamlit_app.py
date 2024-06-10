@@ -10,7 +10,7 @@ import zipfile
 
 # Page title
 st.set_page_config(page_title='ExoplanetML', page_icon=':alien:')
-st.title('🤖 ExoplanetML: Machine Learning Model for Target Variable Prediction')
+st.title(':alien: ExoplanetML: Machine Learning Model for Target Variable Prediction')
 
 with st.expander('About this app'):
   st.markdown('**What can this app do?**')
