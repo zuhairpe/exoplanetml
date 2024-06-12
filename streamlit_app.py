@@ -17,8 +17,9 @@ with st.expander('About this app'):
   st.info('This app allow users to build a machine learning (ML) model for Exoplanet target variable prediction in an end-to-end workflow. This encompasses data upload, data pre-processing, ML model building and post-model analysis. The user might need to do some a priori data curation.')
   st.markdown("""
     <div style="background-color: #f0f2f6; padding: 10px; border-radius: 5px;">
-    Here's a useful tool for data curation [CSV only]: <a href="https://aivigoratemitotool.streamlit.app/" target="_blank">AI-powered Data Curation Tool</a><br><br>
+    Here's a useful tool for data curation [CSV only]: <a href="https://aivigoratemitotool.streamlit.app/" target="_blank">AI-powered Data Curation Tool</a>
     </div>
+    <br><br>
     """, unsafe_allow_html=True)
 
   st.markdown('**How to use the app?**')
