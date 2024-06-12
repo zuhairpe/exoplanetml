@@ -46,12 +46,12 @@ with st.sidebar:
     @st.cache_data
     def convert_df(input_df):
         return input_df.to_csv(index=False).encode('utf-8')
-    example_csv = pd.read_csv('https://drive.google.com/uc?export=download&id=1mD2GPIKImNNhwykkUdXpAiO8GrKH-2b6')
+    example_csv = pd.read_csv('https://drive.google.com/uc?export=download&id=1J1f_qSHCYdfqiqQtpoda_Km_VmQuI4UX')
     csv = convert_df(example_csv)
     st.download_button(
         label="Download example CSV",
         data=csv,
-        file_name='hwc-8.csv',
+        file_name='hwc-pesi.csv',
         mime='text/csv',
     )
 
@@ -59,7 +59,7 @@ with st.sidebar:
     st.markdown('**1.2. Use example data**')
     example_data = st.toggle('PHL Habitable Worlds Catalog (HWC)')
     if example_data:
-        df = pd.read_csv('https://drive.google.com/uc?export=download&id=1mD2GPIKImNNhwykkUdXpAiO8GrKH-2b6')
+        df = pd.read_csv('https://drive.google.com/uc?export=download&id=1J1f_qSHCYdfqiqQtpoda_Km_VmQuI4UX')
 
     st.header('2. Set Parameters')
     parameter_split_size = st.slider('Data split ratio (% for Training Set)', 10, 90, 80, 5)
