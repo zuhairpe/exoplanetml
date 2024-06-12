@@ -19,7 +19,7 @@ with st.expander('About this app'):
     <div style="background-color: #f0f2f6; padding: 10px; border-radius: 5px;">
     Here's a useful tool for data curation [CSV only]: <a href="https://aivigoratemitotool.streamlit.app/" target="_blank">AI-powered Data Curation Tool</a>
     </div>
-    <br><br>
+    <br>
     """, unsafe_allow_html=True)
 
   st.markdown('**How to use the app?**')
