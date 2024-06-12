@@ -15,6 +15,11 @@ st.title(':alien: ExoplanetML: Machine Learning Model for Target Variable Predic
 with st.expander('About this app'):
   st.markdown('**What can this app do?**')
   st.info('This app allow users to build a machine learning (ML) model for Exoplanet target variable prediction in an end-to-end workflow. This encompasses data upload, data pre-processing, ML model building and post-model analysis. The user might need to do some a priori data curation.')
+  st.markdown("""
+    <div style="background-color: #f0f2f6; padding: 10px; border-radius: 5px;">
+    Here's a useful tool for data curation: <a href="https://aivigoratemitotool.streamlit.app/" target="_blank">Data Curation Tool</a>.
+    </div>
+    """, unsafe_allow_html=True)
 
   st.markdown('**How to use the app?**')
   st.warning('To work with the app, go to the sidebar: 1. Select a dataset (if you are uploading your own csv, it might require a bit of curation. Make sure the target variable is the last column and the file contains features relevant for the prediction); 2. Adjust the model parameters using the slider widgets. As a result, this would initiate the ML model building process, display the model results as well as allowing users to download the generated models and accompanying data.')
