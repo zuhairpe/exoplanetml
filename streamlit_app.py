@@ -172,6 +172,22 @@ if uploaded_file or example_data:
     st.write(rf_results.T)
     st.altair_chart(bars, theme='streamlit', use_container_width=True)
 
+    # Prediction results
+    st.header('Prediction results', divider='rainbow')
+    s_y_train = pd.Series(y_train, name='actual').reset_index(drop=True)
+    s_y_train_pred = pd.Series(y_train_pred, name='predicted').reset_index(drop=True)
+    df_train = pd.DataFrame(data=[s_y_train, s_y_train_pred], index=None).T
+    df_train['class'] = 'train'
+        
+    s_y_test = pd.Series(y_test, name='actual').reset_index(drop=True)
+    s_y_test_pred = pd.Series(y_test_pred, name='predicted').reset_index(drop=True)
+    df_test = pd.DataFrame(data=[s_y_test, s_y_test_pred], index=None).T
+    df_test['class'] = 'test'
+    
+    df_prediction = pd.concat([df_train, df_test], axis=0)
+    
+    prediction_col = st.columns((2, 0.2, 3))
+
     # Save trained model
     model_filename = 'rf_model.joblib'
     joblib.dump(rf, model_filename)
