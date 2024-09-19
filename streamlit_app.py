@@ -168,23 +168,33 @@ if uploaded_file or example_data:
         with open(model_filename, 'rb') as f:
             saved_model = joblib.load(f)
 
-        # Ensure the new data has the same features as the model
-        new_X = new_data.iloc[:, :-1]
+        # Get the feature names that the model was trained on, excluding the target column P_ESI
+        model_features = saved_model.feature_names_in_
+
+        # Check if the new dataset has the required input features
+        missing_features = set(model_features).difference(new_data.columns)
         
-        # Predict using the loaded model
-        predictions = saved_model.predict(new_X)
-        
-        # Add predictions to the dataset
-        new_data['Predictions'] = predictions
-        st.write(new_data.head())
-        
-        # Allow download of the new dataset with predictions
-        csv_pred = convert_df(new_data)
-        st.download_button(
-            label="Download Predictions",
-            data=csv_pred,
-            file_name='predictions.csv',
-            mime='text/csv'
-        )
+        if len(missing_features) == 0:
+            # Reorder the columns in the new dataset to match the model's expected input features
+            new_X = new_data[model_features]
+            
+            # Predict using the loaded model
+            predictions = saved_model.predict(new_X)
+            
+            # Add the predictions as a new column to the new dataset
+            new_data['Predictions'] = predictions
+            st.write(new_data.head())
+            
+            # Allow download of the new dataset with predictions
+            csv_pred = convert_df(new_data)
+            st.download_button(
+                label="Download Predictions",
+                data=csv_pred,
+                file_name='predictions.csv',
+                mime='text/csv'
+            )
+        else:
+            # Show an error if the dataset is missing any required features
+            st.error("The dataset is missing the following features: " + ", ".join(missing_features))
 else:
     st.warning('👈 Upload a CSV file or click *"Load example data"* to get started!')
