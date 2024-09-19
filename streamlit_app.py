@@ -187,6 +187,19 @@ if uploaded_file or example_data:
     df_prediction = pd.concat([df_train, df_test], axis=0)
     
     prediction_col = st.columns((2, 0.2, 3))
+    
+    # Display dataframe
+    with prediction_col[0]:
+        st.dataframe(df_prediction, height=320, use_container_width=True)
+
+    # Display scatter plot of actual vs predicted values
+    with prediction_col[2]:
+        scatter = alt.Chart(df_prediction).mark_circle(size=60).encode(
+                        x='actual',
+                        y='predicted',
+                        color='class'
+                  )
+        st.altair_chart(scatter, theme='streamlit', use_container_width=True)
 
     # Save trained model
     model_filename = 'rf_model.joblib'
