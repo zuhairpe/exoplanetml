@@ -130,6 +130,33 @@ if uploaded_file or example_data:
         
     status.update(label="Status", state="complete", expanded=False)
 
+    # Display data info
+    st.header('Input data', divider='rainbow')
+    col = st.columns(4)
+    col[0].metric(label="No. of samples", value=X.shape[0], delta="")
+    col[1].metric(label="No. of X variables", value=X.shape[1], delta="")
+    col[2].metric(label="No. of Training samples", value=X_train.shape[0], delta="")
+    col[3].metric(label="No. of Test samples", value=X_test.shape[0], delta="")
+    
+    with st.expander('Initial dataset', expanded=True):
+        st.dataframe(df, height=210, use_container_width=True)
+    with st.expander('Train split', expanded=False):
+        train_col = st.columns((3,1))
+        with train_col[0]:
+            st.markdown('**X**')
+            st.dataframe(X_train, height=210, hide_index=True, use_container_width=True)
+        with train_col[1]:
+            st.markdown('**y**')
+            st.dataframe(y_train, height=210, hide_index=True, use_container_width=True)
+    with st.expander('Test split', expanded=False):
+        test_col = st.columns((3,1))
+        with test_col[0]:
+            st.markdown('**X**')
+            st.dataframe(X_test, height=210, hide_index=True, use_container_width=True)
+        with test_col[1]:
+            st.markdown('**y**')
+            st.dataframe(y_test, height=210, hide_index=True, use_container_width=True)
+
     # Display feature importance plot
     importances = rf.feature_importances_
     feature_names = list(X.columns)
