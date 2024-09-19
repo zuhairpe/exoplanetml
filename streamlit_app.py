@@ -15,7 +15,7 @@ st.title(':alien: ExoplanetML: Machine Learning Model for Target Variable Predic
 
 with st.expander('About this app'):
     st.markdown('**What can this app do?**')
-    st.info('This app allows users to build a machine learning (ML) model for Exoplanet target variable prediction in an end-to-end workflow. This encompasses data upload, data pre-processing, ML model building, and post-model analysis.')
+    st.info('This app allows users to build a machine learning (ML) model for Exoplanet target variable prediction in an end-to-end workflow. This encompasses data upload, data pre-processing, ML model building and post-model analysis.')
     st.markdown("""
     <div style="background-color: #f0f2f6; padding: 10px; border-radius: 5px;">
     Here's a useful tool for data curation [CSV only]: <a href="https://aivigoratemitotool.streamlit.app/" target="_blank">AI-powered Data Curation Tool</a>. Tip: Ensure that your CSV file doesn't have any NaNs.
@@ -129,6 +129,21 @@ if uploaded_file or example_data:
         }).round(3)
         
     status.update(label="Status", state="complete", expanded=False)
+
+    # Display feature importance plot
+    importances = rf.feature_importances_
+    feature_names = list(X.columns)
+    forest_importances = pd.Series(importances, index=feature_names)
+    df_importance = forest_importances.reset_index().rename(columns={'index': 'feature', 0: 'value'})
+    
+    bars = alt.Chart(df_importance).mark_bar(size=40).encode(
+             x='value:Q',
+             y=alt.Y('feature:N', sort='-x')
+           ).properties(height=250)
+
+    st.header('Model performance and feature importance')
+    st.write(rf_results.T)
+    st.altair_chart(bars, theme='streamlit', use_container_width=True)
 
     # Save trained model
     model_filename = 'rf_model.joblib'
