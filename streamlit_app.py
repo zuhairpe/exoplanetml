@@ -120,13 +120,18 @@ if uploaded_file or example_data:
         test_mse = mean_squared_error(y_test, y_test_pred)
         test_r2 = r2_score(y_test, y_test_pred)
 
-        rf_results = pd.DataFrame({
-            'Method': ['Random forest'],
-            'Training MSE': [train_mse],
-            'Training R2': [train_r2],
-            'Test MSE': [test_mse],
-            'Test R2': [test_r2]
-        }).round(3)
+        st.write("Displaying performance metrics ...")
+        time.sleep(sleep_time)
+        parameter_criterion_string = ' '.join([x.capitalize() for x in parameter_criterion.split('_')])
+        #if 'Mse' in parameter_criterion_string:
+        #    parameter_criterion_string = parameter_criterion_string.replace('Mse', 'MSE')
+        rf_results = pd.DataFrame(['Random forest', train_mse, train_r2, test_mse, test_r2]).transpose()
+        rf_results.columns = ['Method', f'Training {parameter_criterion_string}', 'Training R2', f'Test {parameter_criterion_string}', 'Test R2']
+        # Convert objects to numerics
+        for col in rf_results.columns:
+            rf_results[col] = pd.to_numeric(rf_results[col], errors='ignore')
+        # Round to 3 digits
+        rf_results = rf_results.round(3)
         
     status.update(label="Status", state="complete", expanded=False)
 
