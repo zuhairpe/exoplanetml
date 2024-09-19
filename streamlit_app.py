@@ -161,7 +161,34 @@ if uploaded_file or example_data:
         with test_col[1]:
             st.markdown('**y**')
             st.dataframe(y_test, height=210, hide_index=True, use_container_width=True)
+    
+    # Zip dataset files
+    df.to_csv('dataset.csv', index=False)
+    X_train.to_csv('X_train.csv', index=False)
+    y_train.to_csv('y_train.csv', index=False)
+    X_test.to_csv('X_test.csv', index=False)
+    y_test.to_csv('y_test.csv', index=False)
+    
+    list_files = ['dataset.csv', 'X_train.csv', 'y_train.csv', 'X_test.csv', 'y_test.csv']
+    with zipfile.ZipFile('dataset.zip', 'w') as zipF:
+        for file in list_files:
+            zipF.write(file, compress_type=zipfile.ZIP_DEFLATED)
 
+    with open('dataset.zip', 'rb') as datazip:
+        btn = st.download_button(
+                label='Download ZIP',
+                data=datazip,
+                file_name="dataset.zip",
+                mime="application/octet-stream"
+                )
+
+    # Display model parameters
+    st.header('Model parameters', divider='rainbow')
+    parameters_col = st.columns(3)
+    parameters_col[0].metric(label="Data split ratio (% for Training Set)", value=parameter_split_size, delta="")
+    parameters_col[1].metric(label="Number of estimators (n_estimators)", value=parameter_n_estimators, delta="")
+    parameters_col[2].metric(label="Max features (max_features)", value=parameter_max_features_metric, delta="")
+    
     # Display feature importance plot
     importances = rf.feature_importances_
     feature_names = list(X.columns)
@@ -173,9 +200,42 @@ if uploaded_file or example_data:
              y=alt.Y('feature:N', sort='-x')
            ).properties(height=250)
 
-    st.header('Model performance and feature importance')
-    st.write(rf_results.T)
-    st.altair_chart(bars, theme='streamlit', use_container_width=True)
+    performance_col = st.columns((2, 0.2, 3))
+    with performance_col[0]:
+        st.header('Model performance', divider='rainbow')
+        st.dataframe(rf_results.T.reset_index().rename(columns={'index': 'Parameter', 0: 'Value'}))
+    with performance_col[2]:
+        st.header('Feature importance', divider='rainbow')
+        st.altair_chart(bars, theme='streamlit', use_container_width=True)
+
+    # Prediction results
+    st.header('Prediction results', divider='rainbow')
+    s_y_train = pd.Series(y_train, name='actual').reset_index(drop=True)
+    s_y_train_pred = pd.Series(y_train_pred, name='predicted').reset_index(drop=True)
+    df_train = pd.DataFrame(data=[s_y_train, s_y_train_pred], index=None).T
+    df_train['class'] = 'train'
+        
+    s_y_test = pd.Series(y_test, name='actual').reset_index(drop=True)
+    s_y_test_pred = pd.Series(y_test_pred, name='predicted').reset_index(drop=True)
+    df_test = pd.DataFrame(data=[s_y_test, s_y_test_pred], index=None).T
+    df_test['class'] = 'test'
+    
+    df_prediction = pd.concat([df_train, df_test], axis=0)
+    
+    prediction_col = st.columns((2, 0.2, 3))
+    
+    # Display dataframe
+    with prediction_col[0]:
+        st.dataframe(df_prediction, height=320, use_container_width=True)
+
+    # Display scatter plot of actual vs predicted values
+    with prediction_col[2]:
+        scatter = alt.Chart(df_prediction).mark_circle(size=60).encode(
+                        x='actual',
+                        y='predicted',
+                        color='class'
+                  )
+        st.altair_chart(scatter, theme='streamlit', use_container_width=True)
 
     # Save trained model
     model_filename = 'rf_model.joblib'
