@@ -13,8 +13,8 @@ import zipfile
 st.set_page_config(page_title='ExoplanetML', page_icon=':alien:')
 st.title(':alien: ExoplanetML: Machine Learning Model for Target Variable Prediction')
 
-with st.expander('Abouasdasdasdt this apps'):
-    st.markdown('**What can this app do?**')
+with st.expander('About this apssss'):
+    st.markdown('**What can this appss do?**')
     st.info('This app allows users to build a machine learning (ML) model for Exoplanet target variable prediction in an end-to-end workflow. This encompasses data upload, data pre-processing, ML model building and post-model analysis.')
     st.markdown("""
     <div style="background-color: #f0f2f6; padding: 10px; border-radius: 5px;">
@@ -90,56 +90,6 @@ if uploaded_file or example_data:
         st.write("Splitting data ...")
         time.sleep(sleep_time)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=(100-parameter_split_size)/100, random_state=parameter_random_state)
-
-        # Check if the dataset has the required columns: P_MASS, P_RADIUS, S_MASS, P_ESI
-required_columns = ['P_MASS', 'P_RADIUS', 'S_MASS', 'P_ESI']
-if all(col in df.columns for col in required_columns):
-    
-    # User input to select the X-axis parameter
-    st.subheader('Select Parameter for X-axis')
-    x_axis_param = st.selectbox(
-        'Select the parameter for the X-axis:',
-        options=['P_MASS', 'P_RADIUS', 'S_MASS'],
-        index=0  # Default to 'P_MASS'
-    )
-    
-    # Train Split: Create scatter plot for train data
-    with st.expander('Train split', expanded=True):
-        st.markdown(f"**Scatter plot of {x_axis_param} vs P_ESI (Train Data)**")
-        
-        # Add the target variable to the training dataframe to use in the plot
-        df_train = X_train.copy()
-        df_train['P_ESI'] = y_train
-        train_scatter = alt.Chart(df_train).mark_circle(size=60).encode(
-            x=alt.X(x_axis_param, title=x_axis_param),
-            y=alt.Y('P_ESI', title='P_ESI'),
-            tooltip=[x_axis_param, 'P_ESI']
-        ).interactive().properties(
-            width=600,
-            height=400
-        )
-        
-        st.altair_chart(train_scatter, use_container_width=True)
-    
-    # Test Split: Create scatter plot for test data
-    with st.expander('Test split', expanded=True):
-        st.markdown(f"**Scatter plot of {x_axis_param} vs P_ESI (Test Data)**")
-        
-        # Add the target variable to the test dataframe to use in the plot
-        df_test = X_test.copy()
-        df_test['P_ESI'] = y_test
-        test_scatter = alt.Chart(df_test).mark_circle(size=60).encode(
-            x=alt.X(x_axis_param, title=x_axis_param),
-            y=alt.Y('P_ESI', title='P_ESI'),
-            tooltip=[x_axis_param, 'P_ESI']
-        ).interactive().properties(
-            width=600,
-            height=400
-        )
-        
-        st.altair_chart(test_scatter, use_container_width=True)
-else:
-    st.error("The dataset is missing one or more required features: P_MASS, P_RADIUS, S_MASS, P_ESI")
         
         st.write("Model training ...")
         time.sleep(sleep_time)
@@ -190,22 +140,54 @@ else:
     
     with st.expander('Initial dataset', expanded=True):
         st.dataframe(df, height=210, use_container_width=True)
+
+    # After the train/test split code
+    # Define the x_axis options based on the columns of X_train
+    x_axis = st.selectbox('Select X-axis', options=X_train.columns)  # Example dropdown for X-axis
+
+    # Ensure y_train is a named Series if it's not a DataFrame
+    y_train.name = 'y_train'  # Set the name for the y_train Series if it's not already set
+
+    # Inside the Train split expander
     with st.expander('Train split', expanded=False):
-        train_col = st.columns((3,1))
+        train_col = st.columns((3, 1))
         with train_col[0]:
             st.markdown('**X**')
             st.dataframe(X_train, height=210, hide_index=True, use_container_width=True)
         with train_col[1]:
             st.markdown('**y**')
             st.dataframe(y_train, height=210, hide_index=True, use_container_width=True)
+
+        # Train Set Scatter Plot
+        st.subheader('Train Set Scatter Plot')
+        train_chart = alt.Chart(pd.concat([X_train, y_train], axis=1)).mark_circle(size=60).encode(
+            x='y_train',           # X-axis gets the selected variable
+            y=x_axis,        # Y-axis gets the target variable
+            tooltip=['y_train', x_axis]
+        ).interactive()
+        st.altair_chart(train_chart, use_container_width=True)
+
+    # Ensure y_test is a named Series if it's not a DataFrame
+    y_test.name = 'y_test'  # Set the name for the y_test Series if it's not already set
+
+    # Inside the Test split expander
     with st.expander('Test split', expanded=False):
-        test_col = st.columns((3,1))
+        test_col = st.columns((3, 1))
         with test_col[0]:
             st.markdown('**X**')
             st.dataframe(X_test, height=210, hide_index=True, use_container_width=True)
         with test_col[1]:
             st.markdown('**y**')
             st.dataframe(y_test, height=210, hide_index=True, use_container_width=True)
+
+        # Test Set Scatter Plot
+        st.subheader('Test Set Scatter Plot')
+        test_chart = alt.Chart(pd.concat([X_test, y_test], axis=1)).mark_circle(size=60).encode(
+            x='y_test',         # Y-axis gets the target variable
+            y=x_axis,          # X-axis gets the selected variable
+            tooltip=['y_test', x_axis]
+        ).interactive()
+        st.altair_chart(test_chart, use_container_width=True)
 
     # Display feature importance plot
     importances = rf.feature_importances_
