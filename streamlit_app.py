@@ -295,6 +295,18 @@ if uploaded_file or example_data:
                 file_name='predictions.csv',
                 mime='text/csv'
             )
+
+            # New Feature: Select parameter to plot against Predictions
+            st.subheader('Plot any parameter vs Predictions')
+            x_axis_pred = st.selectbox('Select X-axis for Predictions Plot', options=new_data.columns)
+        
+            # Create scatter plot: Selected parameter vs Predictions
+            scatter_pred_chart = alt.Chart(new_data).mark_circle(size=60).encode(
+                x=x_axis_pred,
+                y='Predictions',
+                tooltip=[x_axis_pred, 'Predictions']
+            ).interactive()
+            st.altair_chart(scatter_pred_chart, use_container_width=True)
         else:
             # Show an error if the dataset is missing any required features
             st.error("The dataset is missing the following features: " + ", ".join(missing_features))
