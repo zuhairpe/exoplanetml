@@ -304,7 +304,7 @@ if uploaded_file or example_data:
             scatter_pred_chart = alt.Chart(new_data).mark_circle(size=60).encode(
                 x=x_axis_pred,
                 y='Predictions',
-                tooltip=[x_axis_pred, 'Predictions']
+                tooltip=['Predictions', x_axis_pred]
             ).interactive()
             st.altair_chart(scatter_pred_chart, use_container_width=True)
         else:
