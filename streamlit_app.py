@@ -161,9 +161,9 @@ if uploaded_file or example_data:
         # Train Set Scatter Plot
         st.subheader('Train Set Scatter Plot')
         train_chart = alt.Chart(pd.concat([X_train, y_train], axis=1)).mark_circle(size=60).encode(
-            x=x_axis,           # X-axis gets the selected variable
-            y='P_ESI',        # Y-axis gets the target variable
-            tooltip=[x_axis, 'P_ESI']
+            x='P_ESI',           # X-axis gets the selected variable
+            y=x_axis,        # Y-axis gets the target variable
+            tooltip=['P_ESI', x_axis]
         ).interactive()
         st.altair_chart(train_chart, use_container_width=True)
 
@@ -180,9 +180,9 @@ if uploaded_file or example_data:
         # Test Set Scatter Plot
         st.subheader('Test Set Scatter Plot')
         test_chart = alt.Chart(pd.concat([X_test, y_test], axis=1)).mark_circle(size=60).encode(
-            x=x_axis,           # X-axis gets the selected variable
-            y='P_ESI',  # Set the Y-axis label to P_ESI
-            tooltip=[x_axis, 'P_ESI']
+            x='P_ESI',           # X-axis gets the selected variable
+            y=x_axis,  # Set the Y-axis label to P_ESI
+            tooltip=['P_ESI', x_axis]
         ).interactive()
         st.altair_chart(test_chart, use_container_width=True)
 
