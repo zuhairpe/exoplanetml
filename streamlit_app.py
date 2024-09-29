@@ -13,7 +13,7 @@ import zipfile
 st.set_page_config(page_title='ExoplanetML', page_icon=':alien:')
 st.title(':alien: ExoplanetML: Machine Learning Model for Target Variable Prediction')
 
-with st.expander('About this apps'):
+with st.expander('Abouasdasdasdt this apps'):
     st.markdown('**What can this app do?**')
     st.info('This app allows users to build a machine learning (ML) model for Exoplanet target variable prediction in an end-to-end workflow. This encompasses data upload, data pre-processing, ML model building and post-model analysis.')
     st.markdown("""
