@@ -176,7 +176,7 @@ if uploaded_file or example_data:
         train_chart = alt.Chart(filtered_train_data).mark_circle(size=60).encode(
             x=x_axis,            # X-axis gets the selected variable
             y='P_ESI',           # Set the Y-axis label to the actual column name 'P_ESI'
-            tooltip=['P_ESI', x_axis]
+            tooltip=[x_axis, 'P_ESI']
         ).interactive()
         st.altair_chart(train_chart, use_container_width=True)
     
@@ -195,7 +195,7 @@ if uploaded_file or example_data:
         test_chart = alt.Chart(pd.concat([X_test, y_test], axis=1)).mark_circle(size=60).encode(
             x='P_ESI',           # X-axis gets the selected variable
             y=x_axis,  # Set the Y-axis label to P_ESI
-            tooltip=['P_ESI', x_axis]
+            tooltip=[x_axis, 'P_ESI']
         ).interactive()
         st.altair_chart(test_chart, use_container_width=True)
 
