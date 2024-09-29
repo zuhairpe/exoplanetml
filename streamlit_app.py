@@ -146,7 +146,7 @@ if uploaded_file or example_data:
     x_axis = st.selectbox('Select X-axis', options=X_train.columns)  # Example dropdown for X-axis
 
     # Ensure y_train is a named Series if it's not a DataFrame
-    y_train.name = 'y_train'  # Set the name for the y_train Series if it's not already set
+    y_train.name = 'P_ESI'  # Set the name for the y_train Series if it's not already set
 
     # Inside the Train split expander
     with st.expander('Train split', expanded=False):
@@ -162,8 +162,8 @@ if uploaded_file or example_data:
         st.subheader('Train Set Scatter Plot')
         train_chart = alt.Chart(pd.concat([X_train, y_train], axis=1)).mark_circle(size=60).encode(
             x=x_axis,           # X-axis gets the selected variable
-            y=alt.value('P_ESI'),        # Y-axis gets the target variable
-            tooltip=[x_axis, alt.value('P_ESI')]
+            y='P_ESI',        # Y-axis gets the target variable
+            tooltip=[x_axis, 'P_ESI']
         ).interactive()
         st.altair_chart(train_chart, use_container_width=True)
 
@@ -181,8 +181,8 @@ if uploaded_file or example_data:
         st.subheader('Test Set Scatter Plot')
         test_chart = alt.Chart(pd.concat([X_test, y_test], axis=1)).mark_circle(size=60).encode(
             x=x_axis,           # X-axis gets the selected variable
-            y=alt.value('P_ESI'),  # Set the Y-axis label to P_ESI
-            tooltip=[x_axis, alt.value('P_ESI')]
+            y='P_ESI',  # Set the Y-axis label to P_ESI
+            tooltip=[x_axis, 'P_ESI']
         ).interactive()
         st.altair_chart(test_chart, use_container_width=True)
 
