@@ -90,7 +90,57 @@ if uploaded_file or example_data:
         st.write("Splitting data ...")
         time.sleep(sleep_time)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=(100-parameter_split_size)/100, random_state=parameter_random_state)
+
+        # Check if the dataset has the required columns: P_mass, P_radius, S_mass, P_ESI
+required_columns = ['P_mass', 'P_radius', 'S_mass', 'P_ESI']
+if all(col in df.columns for col in required_columns):
     
+    # User input to select the X-axis parameter
+    st.subheader('Select Parameter for X-axis')
+    x_axis_param = st.selectbox(
+        'Select the parameter for the X-axis:',
+        options=['P_mass', 'P_radius', 'S_mass'],
+        index=0  # Default to 'P_mass'
+    )
+    
+    # Train Split: Create scatter plot for train data
+    with st.expander('Train split', expanded=True):
+        st.markdown(f"**Scatter plot of {x_axis_param} vs P_ESI (Train Data)**")
+        
+        # Add the target variable to the training dataframe to use in the plot
+        df_train = X_train.copy()
+        df_train['P_ESI'] = y_train
+        train_scatter = alt.Chart(df_train).mark_circle(size=60).encode(
+            x=alt.X(x_axis_param, title=x_axis_param),
+            y=alt.Y('P_ESI', title='P_ESI'),
+            tooltip=[x_axis_param, 'P_ESI']
+        ).interactive().properties(
+            width=600,
+            height=400
+        )
+        
+        st.altair_chart(train_scatter, use_container_width=True)
+    
+    # Test Split: Create scatter plot for test data
+    with st.expander('Test split', expanded=True):
+        st.markdown(f"**Scatter plot of {x_axis_param} vs P_ESI (Test Data)**")
+        
+        # Add the target variable to the test dataframe to use in the plot
+        df_test = X_test.copy()
+        df_test['P_ESI'] = y_test
+        test_scatter = alt.Chart(df_test).mark_circle(size=60).encode(
+            x=alt.X(x_axis_param, title=x_axis_param),
+            y=alt.Y('P_ESI', title='P_ESI'),
+            tooltip=[x_axis_param, 'P_ESI']
+        ).interactive().properties(
+            width=600,
+            height=400
+        )
+        
+        st.altair_chart(test_scatter, use_container_width=True)
+else:
+    st.error("The dataset is missing one or more required features: P_mass, P_radius, S_mass, P_ESI")
+        
         st.write("Model training ...")
         time.sleep(sleep_time)
 
