@@ -298,7 +298,7 @@ if uploaded_file or example_data:
 
             # New Feature: Select parameter to plot against Predictions
             st.subheader('Plot any parameter vs Predictions')
-            x_axis_pred = st.selectbox('Select X-axis for Predictions Plot', options=new_data.columns)
+            x_axis_pred = st.selectbox('Select Parameter', options=new_data.columns)
         
             # Create scatter plot: Selected parameter vs Predictions
             scatter_pred_chart = alt.Chart(new_data).mark_circle(size=60).encode(
