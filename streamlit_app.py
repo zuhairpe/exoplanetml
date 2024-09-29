@@ -148,25 +148,38 @@ if uploaded_file or example_data:
     # Ensure y_train is a named Series if it's not a DataFrame
     y_train.name = 'P_ESI'  # Set the name for the y_train Series if it's not already set
 
+        # Filter Options
+    x_min = st.number_input('Minimum X value', value=float(X_train[x_axis].min()), step=0.01)
+    x_max = st.number_input('Maximum X value', value=float(X_train[x_axis].max()), step=0.01)
+    y_min = st.number_input('Minimum P_ESI value', value=float(y_train.min()), step=0.01)
+    y_max = st.number_input('Maximum P_ESI value', value=float(y_train.max()), step=0.01)
+    
+    # Filter the DataFrame based on user input
+    filtered_train_data = pd.concat([X_train, y_train], axis=1)
+    filtered_train_data = filtered_train_data[(filtered_train_data[x_axis] >= x_min) & 
+                                              (filtered_train_data[x_axis] <= x_max) &
+                                              (filtered_train_data['P_ESI'] >= y_min) & 
+                                              (filtered_train_data['P_ESI'] <= y_max)]
+    
     # Inside the Train split expander
     with st.expander('Train split', expanded=False):
         train_col = st.columns((3, 1))
         with train_col[0]:
             st.markdown('**X**')
-            st.dataframe(X_train, height=210, hide_index=True, use_container_width=True)
+            st.dataframe(filtered_train_data.drop(columns='P_ESI'), height=210, hide_index=True, use_container_width=True)
         with train_col[1]:
             st.markdown('**y**')
-            st.dataframe(y_train, height=210, hide_index=True, use_container_width=True)
-
+            st.dataframe(filtered_train_data['P_ESI'], height=210, hide_index=True, use_container_width=True)
+    
         # Train Set Scatter Plot
         st.subheader('Train Set Scatter Plot')
-        train_chart = alt.Chart(pd.concat([X_train, y_train], axis=1)).mark_circle(size=60).encode(
-            x='P_ESI',           # X-axis gets the selected variable
-            y=x_axis,        # Y-axis gets the target variable
+        train_chart = alt.Chart(filtered_train_data).mark_circle(size=60).encode(
+            x=x_axis,            # X-axis gets the selected variable
+            y='P_ESI',           # Set the Y-axis label to the actual column name 'P_ESI'
             tooltip=['P_ESI', x_axis]
         ).interactive()
         st.altair_chart(train_chart, use_container_width=True)
-
+    
     # Inside the Test split expander
     with st.expander('Test split', expanded=False):
         test_col = st.columns((3, 1))
@@ -176,7 +189,7 @@ if uploaded_file or example_data:
         with test_col[1]:
             st.markdown('**y**')
             st.dataframe(y_test, height=210, hide_index=True, use_container_width=True)
-
+    
         # Test Set Scatter Plot
         st.subheader('Test Set Scatter Plot')
         test_chart = alt.Chart(pd.concat([X_test, y_test], axis=1)).mark_circle(size=60).encode(
