@@ -324,14 +324,6 @@ if uploaded_file or example_data:
             else:
                 st.error(f"The selected parameter '{x_axis_pred}' does not exist in the data.")
 
-       
-            # Create scatter plot: Selected parameter vs Predictions
-            scatter_pred_chart = alt.Chart(new_data).mark_circle(size=60).encode(
-                x='Predected ESI',
-                y=x_axis_pred,
-                tooltip=['Predected ESI', x_axis_pred]
-            ).interactive()
-            st.altair_chart(scatter_pred_chart, use_container_width=True)
         else:
             # Show an error if the dataset is missing any required features
             st.error("The dataset is missing the following features: " + ", ".join(missing_features))
