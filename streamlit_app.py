@@ -296,7 +296,7 @@ if uploaded_file or example_data:
             )
 
             # New Feature: Select parameter to plot against Predictions
-            st.subheader('Plot any parameter vs Predictions')
+            st.subheader('Plot any parameter vs Predicted ESI')
             x_axis_pred = st.selectbox('Select Parameter', options=new_data.columns)
         
             # Create scatter plot: Selected parameter vs Predictions
