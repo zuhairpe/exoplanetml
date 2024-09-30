@@ -283,7 +283,7 @@ if uploaded_file or example_data:
             predictions = saved_model.predict(new_X)
             
             # Add the predictions as a new column to the new dataset
-            new_data['Predictions'] = predictions
+            new_data['Predected ESI'] = predictions
             st.write(new_data.head())
             
             # Allow download of the new dataset with predictions
