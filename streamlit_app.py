@@ -294,23 +294,6 @@ if uploaded_file or example_data:
                 file_name='predictions.csv',
                 mime='text/csv'
             )
-
-            # New Feature: Select parameter to plot against Predictions
-            st.subheader('Plot any parameter vs Predicted ESI')
-            x_axis_pred = st.selectbox('Select Parameter', options=new_data.columns)
-
-            # Filter Options
-            x_min = st.number_input('Minimum X value', value=float(X_train[x_axis].min()), step=0.01)
-            x_max = st.number_input('Maximum X value', value=float(X_train[x_axis].max()), step=0.01)
-            y_min = st.number_input('Minimum P_ESI value', value=float(y_train.min()), step=0.01)
-            y_max = st.number_input('Maximum P_ESI value', value=float(y_train.max()), step=0.01)
-            
-            # Filter the DataFrame based on user input
-            filtered_train_data = pd.concat([X_train, y_train], axis=1)
-            filtered_train_data = filtered_train_data[(filtered_train_data[x_axis] >= x_min) & 
-                                                      (filtered_train_data[x_axis] <= x_max) &
-                                                      (filtered_train_data['Predected ESI'] >= y_min) & 
-                                                      (filtered_train_data['Predected ESI'] <= y_max)]
         
             # Create scatter plot: Selected parameter vs Predictions
             scatter_pred_chart = alt.Chart(new_data).mark_circle(size=60).encode(
