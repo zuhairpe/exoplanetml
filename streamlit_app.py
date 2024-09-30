@@ -301,9 +301,9 @@ if uploaded_file or example_data:
         
             # Create scatter plot: Selected parameter vs Predictions
             scatter_pred_chart = alt.Chart(new_data).mark_circle(size=60).encode(
-                x='Predictions',
+                x='Predected ESI',
                 y=x_axis_pred,
-                tooltip=['Predictions', x_axis_pred]
+                tooltip=['Predected ESI', x_axis_pred]
             ).interactive()
             st.altair_chart(scatter_pred_chart, use_container_width=True)
         else:
