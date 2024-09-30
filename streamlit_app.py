@@ -295,19 +295,6 @@ if uploaded_file or example_data:
                 mime='text/csv'
             )
 
-            # Filter Options
-            x_min = st.number_input('Minimum X value', value=float(X_train[x_axis].min()), step=0.01)
-            x_max = st.number_input('Maximum X value', value=float(X_train[x_axis].max()), step=0.01)
-            y_min = st.number_input('Minimum P_ESI value', value=float(y_train.min()), step=0.01)
-            y_max = st.number_input('Maximum P_ESI value', value=float(y_train.max()), step=0.01)
-            
-            # Filter the DataFrame based on user input
-            filtered_train_data = pd.concat([X_train, y_train], axis=1)
-            filtered_train_data = filtered_train_data[(filtered_train_data[x_axis] >= x_min) & 
-                                                      (filtered_train_data[x_axis] <= x_max) &
-                                                      (filtered_train_data['P_ESI'] >= y_min) & 
-                                                      (filtered_train_data['P_ESI'] <= y_max)]
-
             # New Feature: Select parameter to plot against Predictions
             st.subheader('Plot any parameter vs Predictions')
             x_axis_pred = st.selectbox('Select Parameter', options=new_data.columns)
