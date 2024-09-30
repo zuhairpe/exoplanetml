@@ -285,36 +285,46 @@ if uploaded_file or example_data:
             new_data['Predected ESI'] = predictions
             st.write(new_data.head())
             
-            # Add filtering options
-            x_min_pred = st.number_input('Minimum X value (for Prediction)', value=float(new_data[x_axis_pred].min()), step=0.01)
-            x_max_pred = st.number_input('Maximum X value (for Prediction)', value=float(new_data[x_axis_pred].max()), step=0.01)
-            y_min_pred = st.number_input('Minimum Predected ESI value', value=float(new_data['Predected ESI'].min()), step=0.01)
-            y_max_pred = st.number_input('Maximum Predected ESI value', value=float(new_data['Predected ESI'].max()), step=0.01)
-            
-            # Apply filtering to new_data
-            filtered_new_data = new_data[(new_data[x_axis_pred] >= x_min_pred) & 
-                                         (new_data[x_axis_pred] <= x_max_pred) &
-                                         (new_data['Predected ESI'] >= y_min_pred) &
-                                         (new_data['Predected ESI'] <= y_max_pred)]
-            
-            # Create scatter plot for predictions using filtered data
-            scatter_pred_chart = alt.Chart(filtered_new_data).mark_circle(size=60).encode(
-                x='Predected ESI',
-                y=x_axis_pred,
-                tooltip=['Predected ESI', x_axis_pred]
-            ).interactive()
-            st.altair_chart(scatter_pred_chart, use_container_width=True)
-            
-            # Allow download of the filtered new dataset with predictions
-            csv_pred_filtered = convert_df(filtered_new_data)
-            st.download_button(
-                label="Download Filtered Predictions",
-                data=csv_pred_filtered,
-                file_name='filtered_predictions.csv',
-                mime='text/csv'
+            # Ensure x_axis_pred is defined through a user selection
+            x_axis_pred = st.selectbox(
+                'Select the X-axis parameter for the Prediction chart',
+                options=new_data.columns
             )
+            
+            # Ensure that the parameter exists in the data
+            if x_axis_pred in new_data.columns:
+                # Add filtering options based on the selected x_axis_pred
+                x_min_pred = st.number_input('Minimum X value (for Prediction)', value=float(new_data[x_axis_pred].min()), step=0.01)
+                x_max_pred = st.number_input('Maximum X value (for Prediction)', value=float(new_data[x_axis_pred].max()), step=0.01)
+                y_min_pred = st.number_input('Minimum Predected ESI value', value=float(new_data['Predected ESI'].min()), step=0.01)
+                y_max_pred = st.number_input('Maximum Predected ESI value', value=float(new_data['Predected ESI'].max()), step=0.01)
+            
+                # Apply filtering to new_data based on the selected x_axis_pred
+                filtered_new_data = new_data[(new_data[x_axis_pred] >= x_min_pred) & 
+                                             (new_data[x_axis_pred] <= x_max_pred) &
+                                             (new_data['Predected ESI'] >= y_min_pred) &
+                                             (new_data['Predected ESI'] <= y_max_pred)]
+            
+                # Create scatter plot for predictions using filtered data
+                scatter_pred_chart = alt.Chart(filtered_new_data).mark_circle(size=60).encode(
+                    x='Predected ESI',
+                    y=x_axis_pred,
+                    tooltip=['Predected ESI', x_axis_pred]
+                ).interactive()
+                st.altair_chart(scatter_pred_chart, use_container_width=True)
+            
+                # Allow download of the filtered new dataset with predictions
+                csv_pred_filtered = convert_df(filtered_new_data)
+                st.download_button(
+                    label="Download Filtered Predictions",
+                    data=csv_pred_filtered,
+                    file_name='filtered_predictions.csv',
+                    mime='text/csv'
+                )
+            else:
+                st.error(f"The selected parameter '{x_axis_pred}' does not exist in the data.")
 
-        
+       
             # Create scatter plot: Selected parameter vs Predictions
             scatter_pred_chart = alt.Chart(new_data).mark_circle(size=60).encode(
                 x='Predected ESI',
