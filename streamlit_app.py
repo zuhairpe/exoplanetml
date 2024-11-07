@@ -112,31 +112,6 @@ if uploaded_file or example_data:
         time.sleep(sleep_time)
         y_train_pred = rf.predict(X_train)
         y_test_pred = rf.predict(X_test)
-
-        # New Code Block for Scatter Plots
-import matplotlib.pyplot as plt
-import os
-
-plot_dir = "dependency_plots"
-os.makedirs(plot_dir, exist_ok=True)
-
-input_parameters = ['P_MASS', 'P_RADIUS', 'P_TEMP_EQUIL', 'P_PERIOD', 'S_TEMPERATURE', 'S_MASS', 'S_RADIUS', 'P_FLUX', 'P_GRAVITY']
-
-for param in input_parameters:
-    if param in X_test.columns:  # Ensure the parameter exists in the test set
-        plt.figure(figsize=(8, 6))
-        plt.scatter(X_test[param], y_test_pred, alpha=0.6, color='skyblue')
-        plt.xlabel(param)
-        plt.ylabel("Predicted ESI")
-        plt.title(f"{param} vs Predicted ESI")
-        plt.grid(True)
-        
-        # Save the plot as a PNG file
-        plt.savefig(f"{plot_dir}/{param}_vs_Predicted_ESI.png")
-        plt.close()
-
-        # Optionally, notify the user that the plot has been saved
-        st.write(f"Plot saved: {plot_dir}/{param}_vs_Predicted_ESI.png")
             
         st.write("Evaluating performance metrics ...")
         time.sleep(sleep_time)
