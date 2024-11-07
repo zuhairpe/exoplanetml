@@ -404,86 +404,77 @@ if uploaded_file or example_data:
                 ).interactive()
                 st.altair_chart(scatter_pred_chart, use_container_width=True)
 
-                            # Create a new Word document
-            doc = Document()
-            doc.add_heading('Exoplanet Prediction Analysis Report', level=1)
-            
-            # Introduction section
-            doc.add_heading('Introduction', level=2)
-            doc.add_paragraph(
-                "This report presents an analysis of the dependencies between various exoplanet parameters and the predicted Earth Similarity Index (ESI) values. "
-                "The predictions were made using a machine learning model trained to estimate ESI values based on input parameters such as mass, radius, temperature, "
-                "and star properties. The findings below summarize the observed correlations, patterns, and potential implications for future studies."
-            )
-            
-            # Summary of Parameter Dependencies
-            doc.add_heading('Parameter Dependency Analysis', level=2)
-            doc.add_paragraph(
-                "The following sections explore the dependencies of each parameter on the predicted ESI values. We analyzed both the complete dataset "
-                "and the top 10 highest ESI values to identify significant patterns and potential correlations."
-            )
-            
-            # Insert plots and add analysis for each parameter
-            for param in input_parameters:
-                doc.add_heading(f'{param} vs Predicted ESI', level=3)
+                           # Create a new Word document
+                doc = Document()
+                doc.add_heading('Exoplanet Prediction Analysis Report', level=1)
                 
-                # Insert the "All Values" plot
-                all_values_img_path = f"{plot_dir}/{param}_vs_Predicted_ESI_all.png"
-                doc.add_paragraph("All Values:")
-                doc.add_picture(all_values_img_path, width=Inches(5.5))
-                
-                # Explanation for "All Values" plot
+                # Introduction section
+                doc.add_heading('Introduction', level=2)
                 doc.add_paragraph(
-                    f"The plot of all values for {param} shows the general trend and correlation with the predicted ESI values. Observing these trends can reveal whether "
-                    f"{param} has a strong positive, negative, or neutral relationship with habitability as measured by ESI."
+                    "This report presents an analysis of the dependencies between various exoplanet parameters and the predicted Earth Similarity Index (ESI) values. "
+                    "The predictions were made using a machine learning model trained to estimate ESI values based on input parameters such as mass, radius, temperature, "
+                    "and star properties. The findings below summarize the observed correlations, patterns, and potential implications for future studies."
                 )
                 
-                # Insert the "Top 10 Values" plot
-                top10_values_img_path = f"{plot_dir}/{param}_vs_Predicted_ESI_top10.png"
-                doc.add_paragraph("Top 10 Highest ESI Values:")
-                doc.add_picture(top10_values_img_path, width=Inches(5.5))
-                
-                # Explanation for "Top 10 Values" plot
+                # Summary of Parameter Dependencies
+                doc.add_heading('Parameter Dependency Analysis', level=2)
                 doc.add_paragraph(
-                    f"The plot of the top 10 highest ESI values for {param} highlights the key attributes of the most Earth-like exoplanets in the dataset. "
-                    f"This subset can help identify critical thresholds or values in {param} that appear most favorable for habitability."
+                    "The following sections explore the dependencies of each parameter on the predicted ESI values. We analyzed both the complete dataset "
+                    "and the top 10 highest ESI values to identify significant patterns and potential correlations."
                 )
-            
-            # Overall Findings and Future Implications
-            doc.add_heading('Findings and Future Implications', level=2)
-            doc.add_paragraph(
-                "In analyzing the dependencies across all parameters, we observed that certain factors, such as stellar temperature and planetary mass, "
-                "often correlate with higher ESI values. These insights can guide future studies in selecting exoplanets with optimal conditions for habitability. "
-                "By identifying key patterns in these parameters, future research can prioritize exploring planets within favorable ranges, "
-                "thus improving the chances of discovering potentially habitable exoplanets."
-            )
-            
-            doc.add_paragraph(
-                "This analysis also emphasizes the importance of parameter dependencies in machine learning predictions. Understanding the influence of "
-                "each parameter on habitability predictions allows for more targeted and efficient exploration in the field of exoplanetary studies."
-            )
-            
-            # Save the document
-            doc_filename = "Exoplanet_Prediction_Analysis_Report.docx"
-            doc.save(doc_filename)
-            
-            # Add a download button in Streamlit for the Word document
-            with open(doc_filename, "rb") as file:
-                st.download_button(
-                    label="Download Analysis Report",
-                    data=file,
-                    file_name=doc_filename,
-                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            )
-            
-                # Allow download of the filtered new dataset with predictions
-                csv_pred_filtered = convert_df(filtered_new_data)
-                st.download_button(
-                    label="Download Filtered Predictions",
-                    data=csv_pred_filtered,
-                    file_name='filtered_predictions.csv',
-                    mime='text/csv'
+                
+                # Insert plots and add analysis for each parameter
+                for param in input_parameters:
+                    doc.add_heading(f'{param} vs Predicted ESI', level=3)
+                    
+                    # Insert the "All Values" plot
+                    all_values_img_path = f"{plot_dir}/{param}_vs_Predicted_ESI_all.png"
+                    doc.add_paragraph("All Values:")
+                    doc.add_picture(all_values_img_path, width=Inches(5.5))
+                    
+                    # Explanation for "All Values" plot
+                    doc.add_paragraph(
+                        f"The plot of all values for {param} shows the general trend and correlation with the predicted ESI values. Observing these trends can reveal whether "
+                        f"{param} has a strong positive, negative, or neutral relationship with habitability as measured by ESI."
+                    )
+                    
+                    # Insert the "Top 10 Values" plot
+                    top10_values_img_path = f"{plot_dir}/{param}_vs_Predicted_ESI_top10.png"
+                    doc.add_paragraph("Top 10 Highest ESI Values:")
+                    doc.add_picture(top10_values_img_path, width=Inches(5.5))
+                    
+                    # Explanation for "Top 10 Values" plot
+                    doc.add_paragraph(
+                        f"The plot of the top 10 highest ESI values for {param} highlights the key attributes of the most Earth-like exoplanets in the dataset. "
+                        f"This subset can help identify critical thresholds or values in {param} that appear most favorable for habitability."
+                    )
+                
+                # Overall Findings and Future Implications
+                doc.add_heading('Findings and Future Implications', level=2)
+                doc.add_paragraph(
+                    "In analyzing the dependencies across all parameters, we observed that certain factors, such as stellar temperature and planetary mass, "
+                    "often correlate with higher ESI values. These insights can guide future studies in selecting exoplanets with optimal conditions for habitability. "
+                    "By identifying key patterns in these parameters, future research can prioritize exploring planets within favorable ranges, "
+                    "thus improving the chances of discovering potentially habitable exoplanets."
                 )
+                
+                doc.add_paragraph(
+                    "This analysis also emphasizes the importance of parameter dependencies in machine learning predictions. Understanding the influence of "
+                    "each parameter on habitability predictions allows for more targeted and efficient exploration in the field of exoplanetary studies."
+                )
+                
+                # Save the document
+                doc_filename = "Exoplanet_Prediction_Analysis_Report.docx"
+                doc.save(doc_filename)
+                
+                # Add a download button in Streamlit for the Word document
+                with open(doc_filename, "rb") as file:
+                    st.download_button(
+                        label="Download Analysis Report",
+                        data=file,
+                        file_name=doc_filename,
+                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    )
             else:
                 st.error(f"The selected parameter '{x_axis_pred}' does not exist in the data.")
 
