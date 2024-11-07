@@ -239,23 +239,23 @@ if uploaded_file or example_data:
         ).interactive()
         st.altair_chart(test_chart, use_container_width=True)
 
-         # Create an in-memory ZIP file for the plots
-        zip_buffer = BytesIO()
-        with zipfile.ZipFile(zip_buffer, "w") as zip_file:
-            for param in input_parameters:
-                for suffix in ["all", "top10"]:
-                    plot_path = f"{plot_dir}/{param}_vs_Predicted_ESI_{suffix}.png"
-                    if os.path.exists(plot_path):
-                        zip_file.write(plot_path, os.path.basename(plot_path))
-        zip_buffer.seek(0)  # Move to the beginning of the file for download
-        
-        # Display download button
-        st.download_button(
-            label="Download All Dependency Plots",
-            data=zip_buffer,
-            file_name="dependency_plots.zip",
-            mime="application/zip"
-        )
+     # Create an in-memory ZIP file for the plots
+    zip_buffer = BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+        for param in input_parameters:
+            for suffix in ["all", "top10"]:
+                plot_path = f"{plot_dir}/{param}_vs_Predicted_ESI_{suffix}.png"
+                if os.path.exists(plot_path):
+                    zip_file.write(plot_path, os.path.basename(plot_path))
+    zip_buffer.seek(0)  # Move to the beginning of the file for download
+    
+    # Display download button
+    st.download_button(
+        label="Download All Dependency Plots",
+        data=zip_buffer,
+        file_name="dependency_plots.zip",
+        mime="application/zip"
+    )
 
     # Display feature importance plot
     importances = rf.feature_importances_
