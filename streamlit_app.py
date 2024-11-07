@@ -11,6 +11,8 @@ import zipfile
 import matplotlib.pyplot as plt
 import os
 from io import BytesIO
+from docx import Document
+from docx.shared import Inches
 
 # Page title
 st.set_page_config(page_title='ExoplanetML', page_icon=':alien:')
@@ -342,6 +344,36 @@ if uploaded_file or example_data:
             predictions = saved_model.predict(new_X)
             
             new_data['Predected ESI'] = predictions
+
+                        # Directory to save plots for new predictions
+            plot_dir = "new_data_dependency_plots"
+            os.makedirs(plot_dir, exist_ok=True)
+            
+            # Parameters to visualize dependencies
+            for param in input_parameters:
+                if param in new_data.columns:
+                    
+                    # Plot for all values in new dataset predictions
+                    plt.figure(figsize=(8, 6))
+                    plt.scatter(new_data['Predected ESI'], new_data[param], alpha=0.6, color='skyblue')
+                    plt.xlabel("Predicted ESI")
+                    plt.ylabel(param)
+                    plt.title(f"All Values: {param} vs Predicted ESI")
+                    plt.grid(True)
+                    plt.savefig(f"{plot_dir}/{param}_vs_Predicted_ESI_all.png")
+                    plt.close()
+                    
+                    # Plot for top 10 highest ESI values in new dataset predictions
+                    top_10_indices = np.argsort(new_data['Predected ESI'])[-10:]  # Get indices of top 10 ESI predictions
+                    plt.figure(figsize=(8, 6))
+                    plt.scatter(new_data['Predected ESI'].iloc[top_10_indices], new_data[param].iloc[top_10_indices], alpha=0.6, color='darkorange')
+                    plt.xlabel("Predicted ESI")
+                    plt.ylabel(param)
+                    plt.title(f"Top 10 ESI Values: {param} vs Predicted ESI")
+                    plt.grid(True)
+                    plt.savefig(f"{plot_dir}/{param}_vs_Predicted_ESI_top10.png")
+                    plt.close()
+
             st.write(new_data.head())
             
             # Ensure x_axis_pred is defined through a user selection
@@ -371,6 +403,78 @@ if uploaded_file or example_data:
                     tooltip=['Predected ESI', x_axis_pred]
                 ).interactive()
                 st.altair_chart(scatter_pred_chart, use_container_width=True)
+
+                            # Create a new Word document
+            doc = Document()
+            doc.add_heading('Exoplanet Prediction Analysis Report', level=1)
+            
+            # Introduction section
+            doc.add_heading('Introduction', level=2)
+            doc.add_paragraph(
+                "This report presents an analysis of the dependencies between various exoplanet parameters and the predicted Earth Similarity Index (ESI) values. "
+                "The predictions were made using a machine learning model trained to estimate ESI values based on input parameters such as mass, radius, temperature, "
+                "and star properties. The findings below summarize the observed correlations, patterns, and potential implications for future studies."
+            )
+            
+            # Summary of Parameter Dependencies
+            doc.add_heading('Parameter Dependency Analysis', level=2)
+            doc.add_paragraph(
+                "The following sections explore the dependencies of each parameter on the predicted ESI values. We analyzed both the complete dataset "
+                "and the top 10 highest ESI values to identify significant patterns and potential correlations."
+            )
+            
+            # Insert plots and add analysis for each parameter
+            for param in input_parameters:
+                doc.add_heading(f'{param} vs Predicted ESI', level=3)
+                
+                # Insert the "All Values" plot
+                all_values_img_path = f"{plot_dir}/{param}_vs_Predicted_ESI_all.png"
+                doc.add_paragraph("All Values:")
+                doc.add_picture(all_values_img_path, width=Inches(5.5))
+                
+                # Explanation for "All Values" plot
+                doc.add_paragraph(
+                    f"The plot of all values for {param} shows the general trend and correlation with the predicted ESI values. Observing these trends can reveal whether "
+                    f"{param} has a strong positive, negative, or neutral relationship with habitability as measured by ESI."
+                )
+                
+                # Insert the "Top 10 Values" plot
+                top10_values_img_path = f"{plot_dir}/{param}_vs_Predicted_ESI_top10.png"
+                doc.add_paragraph("Top 10 Highest ESI Values:")
+                doc.add_picture(top10_values_img_path, width=Inches(5.5))
+                
+                # Explanation for "Top 10 Values" plot
+                doc.add_paragraph(
+                    f"The plot of the top 10 highest ESI values for {param} highlights the key attributes of the most Earth-like exoplanets in the dataset. "
+                    f"This subset can help identify critical thresholds or values in {param} that appear most favorable for habitability."
+                )
+            
+            # Overall Findings and Future Implications
+            doc.add_heading('Findings and Future Implications', level=2)
+            doc.add_paragraph(
+                "In analyzing the dependencies across all parameters, we observed that certain factors, such as stellar temperature and planetary mass, "
+                "often correlate with higher ESI values. These insights can guide future studies in selecting exoplanets with optimal conditions for habitability. "
+                "By identifying key patterns in these parameters, future research can prioritize exploring planets within favorable ranges, "
+                "thus improving the chances of discovering potentially habitable exoplanets."
+            )
+            
+            doc.add_paragraph(
+                "This analysis also emphasizes the importance of parameter dependencies in machine learning predictions. Understanding the influence of "
+                "each parameter on habitability predictions allows for more targeted and efficient exploration in the field of exoplanetary studies."
+            )
+            
+            # Save the document
+            doc_filename = "Exoplanet_Prediction_Analysis_Report.docx"
+            doc.save(doc_filename)
+            
+            # Add a download button in Streamlit for the Word document
+            with open(doc_filename, "rb") as file:
+                st.download_button(
+                    label="Download Analysis Report",
+                    data=file,
+                    file_name=doc_filename,
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )
             
                 # Allow download of the filtered new dataset with predictions
                 csv_pred_filtered = convert_df(filtered_new_data)
