@@ -474,7 +474,7 @@ if uploaded_file or example_data:
                     data=file,
                     file_name=doc_filename,
                     mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    )
+            )
             
                 # Allow download of the filtered new dataset with predictions
                 csv_pred_filtered = convert_df(filtered_new_data)
