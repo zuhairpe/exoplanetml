@@ -127,35 +127,33 @@ if uploaded_file or example_data:
         # Assuming `X_test` is the test input features and `y_test_pred` are the model predictions
         for param in input_parameters:
             if param in X_test.columns:
+                
+                # Plot for all values
                 plt.figure(figsize=(8, 6))
-                plt.scatter(X_test[param], y_test_pred, alpha=0.6, color='skyblue')
-                plt.xlabel(param)
-                plt.ylabel("Predicted ESI")
-                plt.title(f"{param} vs Predicted ESI")
+                plt.scatter(y_test_pred, X_test[param], alpha=0.6, color='skyblue')
+                plt.xlabel("Predicted ESI")
+                plt.ylabel(param)
+                plt.title(f"All Values: {param} vs Predicted ESI")
                 plt.grid(True)
                 
-                # Save each plot as an image file
-                plt.savefig(f"{plot_dir}/{param}_vs_Predicted_ESI.png")
+                # Save the plot for all values
+                plt.savefig(f"{plot_dir}/{param}_vs_Predicted_ESI_all.png")
+                plt.close()
+                
+                # Plot for top 10 highest ESI values
+                top_10_indices = np.argsort(y_test_pred)[-10:]  # Get indices of top 10 ESI predictions
+                plt.figure(figsize=(8, 6))
+                plt.scatter(y_test_pred[top_10_indices], X_test[param].iloc[top_10_indices], alpha=0.6, color='darkorange')
+                plt.xlabel("Predicted ESI")
+                plt.ylabel(param)
+                plt.title(f"Top 10 ESI Values: {param} vs Predicted ESI")
+                plt.grid(True)
+                
+                # Save the plot for top 10 values
+                plt.savefig(f"{plot_dir}/{param}_vs_Predicted_ESI_top10.png")
                 plt.close()
 
-                # Create an in-memory ZIP file for the plots
-        zip_buffer = BytesIO()
-        with zipfile.ZipFile(zip_buffer, "w") as zip_file:
-            for param in input_parameters:
-                plot_path = f"{plot_dir}/{param}_vs_Predicted_ESI.png"
-                if os.path.exists(plot_path):
-                    zip_file.write(plot_path, os.path.basename(plot_path))
-        zip_buffer.seek(0)  # Move to the beginning of the file for download
-        
-        # Download button for the ZIP file containing all plots
-        st.download_button(
-            label="Download All Dependency Plots",
-            data=zip_buffer,
-            file_name="dependency_plots.zip",
-            mime="application/zip"
-        )
-
-            
+           
         st.write("Evaluating performance metrics ...")
         time.sleep(sleep_time)
         train_mse = mean_squared_error(y_train, y_train_pred)
@@ -240,6 +238,24 @@ if uploaded_file or example_data:
             tooltip=[x_axis, 'P_ESI']
         ).interactive()
         st.altair_chart(test_chart, use_container_width=True)
+
+         # Create an in-memory ZIP file for the plots
+        zip_buffer = BytesIO()
+        with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+            for param in input_parameters:
+                for suffix in ["all", "top10"]:
+                    plot_path = f"{plot_dir}/{param}_vs_Predicted_ESI_{suffix}.png"
+                    if os.path.exists(plot_path):
+                        zip_file.write(plot_path, os.path.basename(plot_path))
+        zip_buffer.seek(0)  # Move to the beginning of the file for download
+        
+        # Display download button
+        st.download_button(
+            label="Download All Dependency Plots",
+            data=zip_buffer,
+            file_name="dependency_plots.zip",
+            mime="application/zip"
+        )
 
     # Display feature importance plot
     importances = rf.feature_importances_
