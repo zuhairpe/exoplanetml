@@ -10,6 +10,7 @@ import time
 import zipfile
 import matplotlib.pyplot as plt
 import os
+from io import BytesIO
 
 # Page title
 st.set_page_config(page_title='ExoplanetML', page_icon=':alien:')
@@ -136,6 +137,23 @@ if uploaded_file or example_data:
                 # Save each plot as an image file
                 plt.savefig(f"{plot_dir}/{param}_vs_Predicted_ESI.png")
                 plt.close()
+
+                # Create an in-memory ZIP file for the plots
+        zip_buffer = BytesIO()
+        with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+            for param in input_parameters:
+                plot_path = f"{plot_dir}/{param}_vs_Predicted_ESI.png"
+                if os.path.exists(plot_path):
+                    zip_file.write(plot_path, os.path.basename(plot_path))
+        zip_buffer.seek(0)  # Move to the beginning of the file for download
+        
+        # Download button for the ZIP file containing all plots
+        st.download_button(
+            label="Download All Dependency Plots",
+            data=zip_buffer,
+            file_name="dependency_plots.zip",
+            mime="application/zip"
+        )
 
             
         st.write("Evaluating performance metrics ...")
