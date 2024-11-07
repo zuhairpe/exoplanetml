@@ -112,6 +112,31 @@ if uploaded_file or example_data:
         time.sleep(sleep_time)
         y_train_pred = rf.predict(X_train)
         y_test_pred = rf.predict(X_test)
+
+        # New Code Block for Scatter Plots
+import matplotlib.pyplot as plt
+import os
+
+plot_dir = "dependency_plots"
+os.makedirs(plot_dir, exist_ok=True)
+
+input_parameters = ['P_MASS', 'P_RADIUS', 'P_TEMP_EQUIL', 'P_PERIOD', 'S_TEMPERATURE', 'S_MASS', 'S_RADIUS', 'P_FLUX', 'P_GRAVITY']
+
+for param in input_parameters:
+    if param in X_test.columns:  # Ensure the parameter exists in the test set
+        plt.figure(figsize=(8, 6))
+        plt.scatter(X_test[param], y_test_pred, alpha=0.6, color='skyblue')
+        plt.xlabel(param)
+        plt.ylabel("Predicted ESI")
+        plt.title(f"{param} vs Predicted ESI")
+        plt.grid(True)
+        
+        # Save the plot as a PNG file
+        plt.savefig(f"{plot_dir}/{param}_vs_Predicted_ESI.png")
+        plt.close()
+
+        # Optionally, notify the user that the plot has been saved
+        st.write(f"Plot saved: {plot_dir}/{param}_vs_Predicted_ESI.png")
             
         st.write("Evaluating performance metrics ...")
         time.sleep(sleep_time)
@@ -312,30 +337,6 @@ if uploaded_file or example_data:
                     tooltip=['Predected ESI', x_axis_pred]
                 ).interactive()
                 st.altair_chart(scatter_pred_chart, use_container_width=True)
-                import matplotlib.pyplot as plt
-                import os
-                
-                # Directory to save plots
-                plot_dir = "dependency_plots"
-                os.makedirs(plot_dir, exist_ok=True)
-                
-                # Parameters to visualize dependencies
-                input_parameters = ['P_MASS', 'P_RADIUS', 'P_TEMP_EQUIL', 'P_PERIOD', 'S_TEMPERATURE', 'S_MASS', 'S_RADIUS', 'P_FLUX', 'P_GRAVITY']
-                
-                # Assuming `X_test` is the test input features and `y_test_pred` are the model predictions
-                for param in input_parameters:
-                    if param in X_test.columns:
-                        plt.figure(figsize=(8, 6))
-                        plt.scatter(X_test[param], y_test_pred, alpha=0.6, color='skyblue')
-                        plt.xlabel(param)
-                        plt.ylabel("Predicted ESI")
-                        plt.title(f"{param} vs Predicted ESI")
-                        plt.grid(True)
-                        
-                        # Save each plot as an image file
-                        plt.savefig(f"{plot_dir}/{param}_vs_Predicted_ESI.png")
-                        plt.close()
-
             
                 # Allow download of the filtered new dataset with predictions
                 csv_pred_filtered = convert_df(filtered_new_data)
