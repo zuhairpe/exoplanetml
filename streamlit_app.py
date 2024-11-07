@@ -8,6 +8,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 import altair as alt
 import time
 import zipfile
+import matplotlib.pyplot as plt
+import os
 
 # Page title
 st.set_page_config(page_title='ExoplanetML', page_icon=':alien:')
@@ -112,6 +114,29 @@ if uploaded_file or example_data:
         time.sleep(sleep_time)
         y_train_pred = rf.predict(X_train)
         y_test_pred = rf.predict(X_test)
+
+
+        # Directory to save plots
+        plot_dir = "dependency_plots"
+        os.makedirs(plot_dir, exist_ok=True)
+        
+        # Parameters to visualize dependencies
+        input_parameters = ['P_MASS', 'P_RADIUS', 'P_TEMP_EQUIL', 'P_PERIOD', 'S_TEMPERATURE', 'S_MASS', 'S_RADIUS', 'P_FLUX', 'P_GRAVITY']
+        
+        # Assuming `X_test` is the test input features and `y_test_pred` are the model predictions
+        for param in input_parameters:
+            if param in X_test.columns:
+                plt.figure(figsize=(8, 6))
+                plt.scatter(X_test[param], y_test_pred, alpha=0.6, color='skyblue')
+                plt.xlabel(param)
+                plt.ylabel("Predicted ESI")
+                plt.title(f"{param} vs Predicted ESI")
+                plt.grid(True)
+                
+                # Save each plot as an image file
+                plt.savefig(f"{plot_dir}/{param}_vs_Predicted_ESI.png")
+                plt.close()
+
             
         st.write("Evaluating performance metrics ...")
         time.sleep(sleep_time)
